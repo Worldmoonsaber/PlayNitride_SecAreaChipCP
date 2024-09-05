@@ -129,15 +129,19 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opencv_world460.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackReserveSize>200000000</StackReserveSize>
+      <StackCommitSize>200000000</StackCommitSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="OpenCV_Extension_Tool.h" />
     <ClInclude Include="secAreaChipCP_lib.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CPchipAlgo_V1_240625.cpp" />
     <ClCompile Include="GeneralFunction_V1.cpp" />
     <ClCompile Include="Inputfunction.cpp" />
+    <ClCompile Include="OpenCV_Extension_Tool.cpp" />
     <ClCompile Include="secAreaChipCP_MainV1.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

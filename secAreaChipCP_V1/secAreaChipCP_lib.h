@@ -19,7 +19,7 @@ typedef struct
 	int ypitch[3];
 	int carx;
 	int cary;
-}SettingP;
+}SettingP_;
 
 typedef struct
 {
@@ -31,7 +31,7 @@ typedef struct
 	double TDmaxH;
 	double TDminH;
 
-}sizeTD;
+}sizeTD_;
 
 typedef struct
 {
@@ -41,7 +41,7 @@ typedef struct
 	int fgmax[3];
 	int fgmin[3];
 
-}thresP;
+}thresP_;
 
 typedef struct
 {
@@ -50,7 +50,7 @@ typedef struct
 	int cols; //
 	int rows; //
 	double correctTheta;
-}ImgP;
+}ImgP_;
 
 #pragma endregion
 
@@ -77,11 +77,13 @@ Mat KmeanOP(int knum, Mat src);
 
 
 int findBoundary(Mat creteriaIMG, Rect inirect, char direction);
-std::tuple<Rect, Point>FindMaxInnerRect(Mat src, Mat colorSRC, sizeTD target, Point TDcenter);
+std::tuple<Rect, Point>FindMaxInnerRect(Mat src, Mat colorSRC, sizeTD_ target, Point TDcenter);
 
-std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwidth, double resizeTDheight, sizeTD target,int thresmode,int flag, double theta);
+std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwidth, double resizeTDheight, sizeTD_ target,int thresmode,int flag, double theta);
 
-std::tuple<Point, int, Mat, Mat,Rect> FinechipDefine_V1(Mat rawimg, sizeTD target, thresP thresParm, int boolflag,Point Potchip, SettingP chipsetting);
+std::tuple<Point, int, Mat, Mat,Rect> FinechipDefine_V1(Mat rawimg, sizeTD_ target, thresP_ thresParm, int boolflag,Point Potchip, SettingP_ chipsetting);
 
-std::tuple<Point, Mat, int>SimulateCoord_V1(Mat rawimg, Point piccenter, Point Finechip, int boolflag, SettingP chipsetting, Rect fineRect);
+std::tuple<Point, Mat, int>SimulateCoord_V1(Mat rawimg, Point piccenter, Point Finechip, int boolflag, SettingP_ chipsetting, Rect fineRect);
 #pragma endregion
+
+void funcThreshold(Mat ImgInput, Mat& ImgThres, thresP_ thresParm, int PicMode, sizeTD_ target);

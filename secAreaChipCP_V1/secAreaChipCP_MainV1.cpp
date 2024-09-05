@@ -7,10 +7,10 @@
 
 int main()
 {
-	SettingP chipsetting;
-	thresP thresParm;
-	ImgP imageParm;
-	sizeTD target;
+	SettingP_ chipsetting;
+	thresP_ thresParm;
+	ImgP_ imageParm;
+	sizeTD_ target;
 
 
 
@@ -59,9 +59,11 @@ int main()
 	int mode = 1;
 	if (mode == 1)
 	{
+		/*
 		// Image source input: IMG format:RGB
 		try
 		{
+
 			std::tie(picorder, rawimg) = Inputfunction();
 			
 			if (rawimg.empty())
@@ -78,9 +80,10 @@ int main()
 
 
 		}//catch loop
-
+		*/
 		/////
-		
+		rawimg = imread("C:\\Image\\SecAreaChipCP\\11809.bmp");
+		picorder = 11809;
 
 
 		target.TDmaxW = 1.3;
@@ -150,13 +153,6 @@ int main()
 
 		if (boolflag == 0)
 		{
-
-			
-
-
-			
-
-			
 			/*Rotate picture::: */
 			//if (imageParm.correctTheta != 0)
 			//{
@@ -225,22 +221,6 @@ int main()
 				Grayimg = Mat::zeros(Size(600, 500), CV_8UC1);
 			}
 			
-
-			
-			
-
-			
-
-
-
-
-			
-				
-			
-
-
-			
-
 
 		}
 
