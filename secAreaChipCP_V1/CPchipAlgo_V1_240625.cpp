@@ -420,8 +420,7 @@ std::tuple<Point, Mat, int>SimulateCoord_V1(Mat rawimg, Point piccenter, Point F
 		cv::line(markimg, Point(0, FinalPt.y), Point(markimg.size[1], FinalPt.y), Scalar(255, 133, 170), 5, 8);
 		cv::line(markimg, Point(FinalPt.x, 0), Point(FinalPt.x, markimg.size[0]), Scalar(255, 133, 170), 5, 8);
 
-		
-
+		boolflag = 9;
 	}
 	else
 	{
