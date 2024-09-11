@@ -42,17 +42,20 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 	cv::morphologyEx(thresimg, thresimg, cv::MORPH_CLOSE, Kcomclose, Point(-1, -1), 1);
 	cv::morphologyEx(thresimg, thresimg, cv::MORPH_OPEN, Kcomclose, Point(-1, -1), 3);
 	
-	Mat thres2;
-	Mat thresresult= Mat::zeros(thresimg.size(), CV_8UC1);
-	threshold(EnHBGR, thres2, int(minVal+15), 255, THRESH_BINARY_INV);
-	vector<vector<Point>> thres2cnt;
-	cv::medianBlur(thres2, thres2, 3);
-	cv::morphologyEx(thres2, thres2, cv::MORPH_DILATE, Kcomclose, Point(-1, -1), 1);
-	thres2.copyTo(thresresult);
+	//Mat thres2;
+	//Mat thresresult= Mat::zeros(thresimg.size(), CV_8UC1);
+	//threshold(EnHBGR, thres2, int(minVal+15), 255, THRESH_BINARY_INV);
+	//vector<vector<Point>> thres2cnt;
+	//cv::medianBlur(thres2, thres2, 3);
+	//cv::morphologyEx(thres2, thres2, cv::MORPH_DILATE, Kcomclose, Point(-1, -1), 1);
+	//thres2.copyTo(thresresult);
 
-	vector<BlobInfo> vRegions = RegionPartition(thres2, resizeTDwidth * resizeTDheight * 1.4, resizeTDwidth * resizeTDheight * 0.5);
+	vector<BlobInfo> vRegions = RegionPartitionTopology(thresimg);
 	Point2f piccenter = find_piccenter(thresimg);
 
+
+
+	//resizeTDwidth * resizeTDheight * 1.4, resizeTDwidth * resizeTDheight * 0.5
 	try
 	{
 		if (vRegions.size() == 0)
@@ -63,7 +66,8 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 		else
 		{
 			vector<BlobInfo> vChipPossible;
-			
+			vector<vector<Point>> vContour;
+
 			for (int i = 0; i < vRegions.size(); i++)
 			{	
 				double bxangle = 0;
@@ -73,14 +77,20 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 				else
 					bxangle = (abs(vRegions[i].Angle()));
 
-				if (vRegions[i].minRectHeight()* vRegions[i].minRectWidth() < (resizeTDwidth * resizeTDheight *1.4) &&
-					vRegions[i].minRectHeight() * vRegions[i].minRectWidth() > (resizeTDwidth * resizeTDheight * 0.6) &&
+				if (vRegions[i].Width()* vRegions[i].Height() < (resizeTDwidth * resizeTDheight *1.4) &&
+					vRegions[i].Width() * vRegions[i].Height() > (resizeTDwidth * resizeTDheight * 0.6) &&
 					bxangle <theta) //theta=3
 				{
 					vChipPossible.push_back(vRegions[i]);
+					vContour.push_back(vRegions[i].contourMain());
 				}
 
 			}
+
+			Mat debug = Mat(cropedRImg.size(), CV_8UC1);
+
+			drawContours(debug, vContour, -1, Scalar(255, 255, 255), -1);
+
 
 			std::sort(vChipPossible.begin(), vChipPossible.end(), [&, piccenter](BlobInfo& a, BlobInfo& b)
 				{
@@ -119,9 +129,9 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 	EnHBGR.release();
 	gauBGR.release();
 	Kcomclose.release();
-	thres2.release();
+	//thres2.release();
 	thresimg.release();
-	thresresult.release();
+	//thresresult.release();
 	return{ potentialchip,flag };
 }
 
