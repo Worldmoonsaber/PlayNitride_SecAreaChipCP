@@ -449,6 +449,23 @@ std::tuple<int, Point_<int>> FindMF_pixel(Mat histImg)
 	return { maxVal,maxLoc };
 }
 
+void CheckCropImgIsReasonable(Mat img, SettingP_ chipsetting, sizeTD_ target, ImgP_ imageParm, int& flag, Point2f& PicCenterOut)
+{
+	flag = 0;
+
+	PicCenterOut = Point2f(chipsetting.carx, chipsetting.cary);
+
+	int xTolerance = int(chipsetting.xpitch[0] * 0.8);
+	int yTolerance = int(chipsetting.ypitch[0] * 0.8);
+
+	//---是否超過影像範圍
+	if (chipsetting.carx < xTolerance || chipsetting.cary < yTolerance)
+		flag = 7;
+
+	//---是否超過影像範圍
+	if (chipsetting.carx > img.cols - xTolerance || chipsetting.cary > img.rows - yTolerance)
+		flag = 7;
+}
 
 
 

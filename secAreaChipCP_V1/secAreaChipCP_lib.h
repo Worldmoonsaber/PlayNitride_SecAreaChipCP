@@ -79,7 +79,7 @@ Mat KmeanOP(int knum, Mat src);
 int findBoundary(Mat creteriaIMG, Rect inirect, char direction);
 std::tuple<Rect, Point>FindMaxInnerRect(Mat src, Mat colorSRC, sizeTD_ target, Point TDcenter);
 
-std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwidth, double resizeTDheight, sizeTD_ target,int thresmode,int flag, double theta);
+std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwidth, double resizeTDheight, sizeTD_ target,int thresmode,int flag, double theta, Point2f creteriaPoint);
 
 std::tuple<Point, int, Mat, Mat,Rect> FinechipDefine_V1(Mat rawimg, sizeTD_ target, thresP_ thresParm, int boolflag,Point Potchip, SettingP_ chipsetting);
 
@@ -87,3 +87,6 @@ std::tuple<Point, Mat, int>SimulateCoord_V1(Mat rawimg, Point piccenter, Point F
 #pragma endregion
 
 void funcThreshold(Mat ImgInput, Mat& ImgThres, thresP_ thresParm, int PicMode, sizeTD_ target);
+
+
+void CheckCropImgIsReasonable(Mat img, SettingP_ chipsetting, sizeTD_ target, ImgP_ imageParm, int& flag, Point2f& PicCenterOut);

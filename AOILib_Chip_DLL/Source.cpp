@@ -108,11 +108,26 @@ void CPchips_SecArea(thresP thresParm, ImgP imageParm, SettingP chipsetting, siz
 		Gimg = Mat::zeros(Size(600, 500), CV_8UC1);
 	}
 	
+	if (imageParm.cols != rawimg.cols || imageParm.rows != rawimg.rows)
+		boolflag = 7;
+
+	if (boolflag == 0)
+		CheckCropImgIsReasonable(rawimg, _chipsetting, _target, _imageParm, boolflag, creteriaPoint);
+
+	if (boolflag == 7)
+	{
+		rawimg.copyTo(drawF2);
+		Gimg = Mat::zeros(Size(600, 500), CV_8UC1);
+	}
+
+
+
+
 
 	if (boolflag == 0) //&& imageParm.Outputmode == 0
 	{
 		
-		creteriaPoint = find_piccenter(rawimg);
+		//creteriaPoint = find_piccenter(rawimg);
 
 		/*****Step.1 roughly search chip:::*/
 			/*Resize image to speed up::start*/
@@ -124,7 +139,7 @@ void CPchips_SecArea(thresP thresParm, ImgP imageParm, SettingP chipsetting, siz
 		//auto t_start2 = std::chrono::high_resolution_clock::now();
 
 		Point Potchip;
-		std::tie(Potchip, boolflag) = potentialchipSearch_V1(cropedRImg, resizeTDwidth, resizeTDheight, _target, thresParm.thresmode, boolflag, 3);
+		std::tie(Potchip, boolflag) = potentialchipSearch_V1(cropedRImg, resizeTDwidth, resizeTDheight, _target, thresParm.thresmode, boolflag, 3, creteriaPoint);
 
 		/*auto t_end2 = std::chrono::high_resolution_clock::now();
 		double elapsed_time_ms2 = std::chrono::duration<double, std::milli>(t_end2 - t_start2).count();

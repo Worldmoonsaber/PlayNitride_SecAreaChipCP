@@ -4,7 +4,7 @@
 
 #pragma region STEP1_roughlysearch 
 
-std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwidth, double resizeTDheight, sizeTD_ target, int thresmode, int flag, double theta)
+std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwidth, double resizeTDheight, sizeTD_ target, int thresmode, int flag, double theta,Point2f creteriaPoint)
 {
 	Point potentialchip = Point(0, 0);
 
@@ -51,7 +51,7 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 	//thres2.copyTo(thresresult);
 
 	vector<BlobInfo> vRegions = RegionPartitionTopology(thresimg);
-	Point2f piccenter = find_piccenter(thresimg);
+	Point2f piccenter = Point2f(creteriaPoint.x/12, creteriaPoint.y / 12);
 
 
 
@@ -266,7 +266,7 @@ std::tuple<Point, int,Mat,Mat,Rect> FinechipDefine_V1(Mat rawimg, sizeTD_ target
 			}
 			else
 			{
-				crossCenter = vChipsPossible[0].Center() + Point2f(chipsetting.carx, chipsetting.cary);
+				crossCenter = vChipsPossible[0].Center();// +Point2f(chipsetting.carx, chipsetting.cary);
 				drawrect = Rect(vChipsPossible[0].Xmin(), vChipsPossible[0].Ymin(), vChipsPossible[0].Width(), vChipsPossible[0].Height());
 
 				cv::circle(cropedrawimg,

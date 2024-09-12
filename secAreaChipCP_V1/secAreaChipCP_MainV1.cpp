@@ -26,8 +26,8 @@ int main()
 	imageParm.PICmode = 0;  // 0=B or L、1=G、2=R
 	//chipsetting.interval[0] = 0; //2
 	
-	chipsetting.carx = 0;
-	chipsetting.cary = 0;
+	chipsetting.carx = 4500;
+	chipsetting.cary = 2000;
 
 	//Tell AOI how many angles should rotate : positive: counterclockwise   /negative:clockwise
 	//imageParm.correctTheta = 2.6; //8280402
@@ -82,8 +82,8 @@ int main()
 		}//catch loop
 		*/
 		/////
-		rawimg = imread("C:\\Image\\SecAreaChipCP\\11809.bmp");
-		picorder = 11809;
+		rawimg = imread("C:\\Image\\SecAreaChipCP\\704001.bmp");
+		picorder = 704001;
 
 
 		target.TDmaxW = 1.3;
@@ -145,11 +145,24 @@ int main()
 		//CreateRotImg(rawimg, 8280402,-1*imageParm.correctTheta); //negative:counter-clockwise // positive:clockwise
 
 		if (imageParm.cols!= rawimg.cols || imageParm.rows!= rawimg.rows)
+			boolflag = 7;
+
+		if (boolflag == 0)
 		{
-			boolflag == 7;
+			//------版本轉換時的防呆設計
+			if (chipsetting.carx==0 && chipsetting.cary == 0)
+				creteriaPoint = Point2f(0.5 * imageParm.cols, 0.5 * imageParm.rows);
+			else
+				CheckCropImgIsReasonable(rawimg, chipsetting, target, imageParm,boolflag, creteriaPoint);
+		}
+
+
+		if (boolflag == 7)
+		{
 			rawimg.copyTo(markimg_simu);
 			Grayimg = Mat::zeros(Size(600, 500), CV_8UC1);
 		}
+
 
 		if (boolflag == 0)
 		{
@@ -161,7 +174,7 @@ int main()
 			//}
 			///*rotate end----------------*/
 
-			creteriaPoint = find_piccenter(rawimg);
+			//creteriaPoint = find_piccenter(rawimg);
 
 			/*****Step.1 roughly search chip:::*/
 			/*Resize image to speed up::start*/
@@ -173,7 +186,7 @@ int main()
 			auto t_start2 = std::chrono::high_resolution_clock::now();
 
 			Point Potchip;
-			std::tie(Potchip, boolflag) = potentialchipSearch_V1(cropedRImg, resizeTDwidth, resizeTDheight, target, thresParm.thresmode,boolflag, 3);
+			std::tie(Potchip, boolflag) = potentialchipSearch_V1(cropedRImg, resizeTDwidth, resizeTDheight, target, thresParm.thresmode,boolflag, 3, creteriaPoint);
 		
 			auto t_end2 = std::chrono::high_resolution_clock::now();
 			double elapsed_time_ms2 = std::chrono::duration<double, std::milli>(t_end2 - t_start2).count();
