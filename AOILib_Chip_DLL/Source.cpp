@@ -131,10 +131,10 @@ void CPchips_SecArea(thresP thresParm, ImgP imageParm, SettingP chipsetting, siz
 
 		/*****Step.1 roughly search chip:::*/
 			/*Resize image to speed up::start*/
-		double resizeTDwidth = _target.TDwidth / 12;
-		double resizeTDheight = _target.TDheight / 12;
+		double resizeTDwidth = _target.TDwidth / 10;
+		double resizeTDheight = _target.TDheight / 10;
 		std::cout << "calculate resize TD dimension is:: " << resizeTDwidth << " / " << resizeTDheight << endl;
-		cv::resize(rawimg, cropedRImg, Size(int(rawimg.cols / 12), int(rawimg.rows / 12)), INTER_NEAREST);
+		cv::resize(rawimg, cropedRImg, Size(int(rawimg.cols / 10), int(rawimg.rows / 10)), INTER_NEAREST);
 
 		//auto t_start2 = std::chrono::high_resolution_clock::now();
 

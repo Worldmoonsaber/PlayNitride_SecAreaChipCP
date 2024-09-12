@@ -455,16 +455,19 @@ void CheckCropImgIsReasonable(Mat img, SettingP_ chipsetting, sizeTD_ target, Im
 
 	PicCenterOut = Point2f(chipsetting.carx, chipsetting.cary);
 
+	if (PicCenterOut == Point2f(0, 0)) //版本轉換防呆
+		PicCenterOut = Point2f(img.cols*0.5, img.rows * 0.5);
+
 	int xTolerance = int(chipsetting.xpitch[0] * 0.8);
 	int yTolerance = int(chipsetting.ypitch[0] * 0.8);
 
 	//---是否超過影像範圍
 	if (chipsetting.carx < xTolerance || chipsetting.cary < yTolerance)
-		flag = 7;
+		flag = 6;
 
 	//---是否超過影像範圍
 	if (chipsetting.carx > img.cols - xTolerance || chipsetting.cary > img.rows - yTolerance)
-		flag = 7;
+		flag = 6;
 }
 
 

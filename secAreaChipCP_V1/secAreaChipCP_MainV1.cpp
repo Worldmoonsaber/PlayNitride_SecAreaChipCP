@@ -26,8 +26,8 @@ int main()
 	imageParm.PICmode = 0;  // 0=B or L¡B1=G¡B2=R
 	//chipsetting.interval[0] = 0; //2
 	
-	chipsetting.carx = 4500;
-	chipsetting.cary = 2000;
+	chipsetting.carx = 1300;
+	chipsetting.cary = 1500;
 
 	//Tell AOI how many angles should rotate : positive: counterclockwise   /negative:clockwise
 	//imageParm.correctTheta = 2.6; //8280402
@@ -157,7 +157,7 @@ int main()
 		}
 
 
-		if (boolflag == 7)
+		if (boolflag != 0)
 		{
 			rawimg.copyTo(markimg_simu);
 			Grayimg = Mat::zeros(Size(600, 500), CV_8UC1);
@@ -178,10 +178,10 @@ int main()
 
 			/*****Step.1 roughly search chip:::*/
 			/*Resize image to speed up::start*/
-			double resizeTDwidth= target.TDwidth / 12;
-			double resizeTDheight = target.TDheight / 12;
+			double resizeTDwidth= target.TDwidth / 10;
+			double resizeTDheight = target.TDheight / 10;
 			std::cout << "calculate resize TD dimension is:: " << resizeTDwidth << " / " << resizeTDheight << endl;
-			cv::resize(rawimg, cropedRImg, Size(int(rawimg.cols / 12), int(rawimg.rows / 12)), INTER_NEAREST);
+			cv::resize(rawimg, cropedRImg, Size(int(rawimg.cols / 10), int(rawimg.rows / 10)), INTER_NEAREST);
 
 			auto t_start2 = std::chrono::high_resolution_clock::now();
 

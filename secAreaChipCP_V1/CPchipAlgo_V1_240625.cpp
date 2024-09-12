@@ -42,20 +42,9 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 	cv::morphologyEx(thresimg, thresimg, cv::MORPH_CLOSE, Kcomclose, Point(-1, -1), 1);
 	cv::morphologyEx(thresimg, thresimg, cv::MORPH_OPEN, Kcomclose, Point(-1, -1), 3);
 	
-	//Mat thres2;
-	//Mat thresresult= Mat::zeros(thresimg.size(), CV_8UC1);
-	//threshold(EnHBGR, thres2, int(minVal+15), 255, THRESH_BINARY_INV);
-	//vector<vector<Point>> thres2cnt;
-	//cv::medianBlur(thres2, thres2, 3);
-	//cv::morphologyEx(thres2, thres2, cv::MORPH_DILATE, Kcomclose, Point(-1, -1), 1);
-	//thres2.copyTo(thresresult);
-
 	vector<BlobInfo> vRegions = RegionPartitionTopology(thresimg);
-	Point2f piccenter = Point2f(creteriaPoint.x/12, creteriaPoint.y / 12);
+	Point2f piccenter = Point2f(creteriaPoint.x/10, creteriaPoint.y / 10);
 
-
-
-	//resizeTDwidth * resizeTDheight * 1.4, resizeTDwidth * resizeTDheight * 0.5
 	try
 	{
 		if (vRegions.size() == 0)
@@ -101,10 +90,7 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 
 			if (vChipPossible.size() > 0)
 			{
-				potentialchip = Point2i((Point2f(vChipPossible[0].Center().x*12, vChipPossible[0].Center().y * 12)));
-
-				//--- flag2 判斷是否太靠近邊緣
-
+				potentialchip = Point2i((Point2f(vChipPossible[0].Center().x*10, vChipPossible[0].Center().y * 10)));
 
 				flag = 0;
 			}
@@ -129,9 +115,7 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 	EnHBGR.release();
 	gauBGR.release();
 	Kcomclose.release();
-	//thres2.release();
 	thresimg.release();
-	//thresresult.release();
 	return{ potentialchip,flag };
 }
 
@@ -154,14 +138,11 @@ std::tuple<Point, int,Mat,Mat,Rect> FinechipDefine_V1(Mat rawimg, sizeTD_ target
 	IMGoffset.y = Potchip.y - int(chipsetting.ypitch[0] * 0.8);
 	Rect Cregion(IMGoffset.x, IMGoffset.y, int(chipsetting.xpitch[0] * 0.8) * 2, int(chipsetting.ypitch[0] * 0.8 * 2));
 	
-	
 	Mat cropedrawimg = CropIMG(rawimg, Cregion);
 	Mat cropedRImg;
 
 	cvtColor(cropedrawimg, cropedRImg, COLOR_BGR2GRAY);
-
 	cv:rectangle(markimg, Cregion, Scalar(0, 0, 255), 2);
-
 	Mat medimg, adptThres, comthresIMG;
 
 	Mat gauBGR, EnHBGR,FNDimg;
