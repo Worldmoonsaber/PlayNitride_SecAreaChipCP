@@ -61,6 +61,9 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 			{	
 				double bxangle = 0;
 			
+				if (vRegions[i].Rectangularity() < 0.7)
+					continue;
+
 				if (vRegions[i].Angle() > 45)
 					bxangle = abs(vRegions[i].Angle() - 90);
 				else
