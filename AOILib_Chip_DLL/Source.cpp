@@ -109,14 +109,13 @@ void CPchips_SecArea(thresP thresParm, ImgP imageParm, SettingP chipsetting, siz
 	}
 
 	//----防呆 如果 carX carY 是(0,0) 自動帶入 (2660,2300)
-	if (_chipsetting.carx == 0 && _chipsetting.cary == 0)
-	{
-		_chipsetting.carx = 2660;
-		_chipsetting.cary = 2300;
-	}
+	//if (_chipsetting.carx == 0 && _chipsetting.cary == 0)
+	//{
+	//	_chipsetting.carx = 2660;
+	//	_chipsetting.cary = 2300;
+	//}
 
 
-	
 	if (imageParm.cols != rawimg.cols || imageParm.rows != rawimg.rows)
 		boolflag = 7;
 
