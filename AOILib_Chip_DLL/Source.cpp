@@ -131,7 +131,7 @@ void CPchips_SecArea(thresP thresParm, ImgP imageParm, SettingP chipsetting, siz
 
 	if (boolflag == 0) //&& imageParm.Outputmode == 0
 	{
-		float ratio = 4;
+		float ratio = 2;
 		//creteriaPoint = find_piccenter(rawimg);
 
 		/*****Step.1 roughly search chip:::*/

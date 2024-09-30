@@ -7,7 +7,7 @@
 std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwidth, double resizeTDheight, sizeTD_ target, int thresmode, int flag, double theta,Point2f creteriaPoint)
 {
 	Point potentialchip = Point(0, 0);
-	float ratio = 5;
+	float ratio = 2;
 
 	Mat gauBGR, EnHBGR;
 	cv::cvtColor(cropedRImg, cropedRImg, cv::COLOR_BGR2GRAY);
