@@ -26,8 +26,8 @@ int main()
 	imageParm.PICmode = 0;  // 0=B or L、1=G、2=R
 	//chipsetting.interval[0] = 0; //2
 	
-	chipsetting.carx = 1300;
-	chipsetting.cary = 1500;
+	chipsetting.carx = 1000;
+	chipsetting.cary = 3700;
 
 	//Tell AOI how many angles should rotate : positive: counterclockwise   /negative:clockwise
 	//imageParm.correctTheta = 2.6; //8280402
@@ -82,7 +82,7 @@ int main()
 		}//catch loop
 		*/
 		/////
-		rawimg = imread("C:\\Image\\SecAreaChipCP\\704001.bmp");
+		rawimg = imread("C:\\Users\\Playuser\\Downloads\\20240930_154751.bmp");
 		picorder = 704001;
 
 
@@ -132,9 +132,11 @@ int main()
 			chipsetting.ypitch[0] = 290;
 		}
 		
+		target.TDwidth = 270;
+		target.TDheight = 280;
 
-
-
+		chipsetting.xpitch[0] = 300;
+		chipsetting.ypitch[0] = 310;
 		//{mode,bgmax,bgmin,fgmax,fgmin}
 		//thresParm = { 0,{90,99999,99999},{0,99999,99999} ,{255,9,9}, {120,0,0} };//2040
 
@@ -147,14 +149,8 @@ int main()
 		if (imageParm.cols!= rawimg.cols || imageParm.rows!= rawimg.rows)
 			boolflag = 7;
 
-		if (boolflag == 0)
-		{
-			//------版本轉換時的防呆設計
-			if (chipsetting.carx==0 && chipsetting.cary == 0)
-				creteriaPoint = Point2f(0.5 * imageParm.cols, 0.5 * imageParm.rows);
-			else
-				CheckCropImgIsReasonable(rawimg, chipsetting, target, imageParm,boolflag, creteriaPoint);
-		}
+		if (boolflag == 0)	
+			CheckCropImgIsReasonable(rawimg, chipsetting, target, imageParm,boolflag, creteriaPoint);
 
 
 		if (boolflag != 0)
@@ -178,10 +174,12 @@ int main()
 
 			/*****Step.1 roughly search chip:::*/
 			/*Resize image to speed up::start*/
-			double resizeTDwidth= target.TDwidth / 10;
-			double resizeTDheight = target.TDheight / 10;
+			float ratio = 4;
+
+			double resizeTDwidth= target.TDwidth / ratio;
+			double resizeTDheight = target.TDheight / ratio;
 			std::cout << "calculate resize TD dimension is:: " << resizeTDwidth << " / " << resizeTDheight << endl;
-			cv::resize(rawimg, cropedRImg, Size(int(rawimg.cols / 10), int(rawimg.rows / 10)), INTER_NEAREST);
+			cv::resize(rawimg, cropedRImg, Size(int(rawimg.cols / ratio), int(rawimg.rows / ratio)), INTER_NEAREST);
 
 			auto t_start2 = std::chrono::high_resolution_clock::now();
 

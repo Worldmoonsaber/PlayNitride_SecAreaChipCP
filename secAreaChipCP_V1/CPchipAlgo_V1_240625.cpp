@@ -7,6 +7,7 @@
 std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwidth, double resizeTDheight, sizeTD_ target, int thresmode, int flag, double theta,Point2f creteriaPoint)
 {
 	Point potentialchip = Point(0, 0);
+	float ratio = 5;
 
 	Mat gauBGR, EnHBGR;
 	cv::cvtColor(cropedRImg, cropedRImg, cv::COLOR_BGR2GRAY);
@@ -38,12 +39,13 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 	vector<Point2f> potPT;
 	vector<double>potDist;
 
-	Mat Kcomclose = Mat::ones(Size(3, 3), CV_8UC1);
-	cv::morphologyEx(thresimg, thresimg, cv::MORPH_CLOSE, Kcomclose, Point(-1, -1), 1);
-	cv::morphologyEx(thresimg, thresimg, cv::MORPH_OPEN, Kcomclose, Point(-1, -1), 3);
+	//Mat Kcomclose = Mat::ones(Size(3, 3), CV_8UC1);
+	//cv::morphologyEx(thresimg, thresimg, cv::MORPH_CLOSE, Kcomclose, Point(-1, -1), 3);
+	//cv::morphologyEx(thresimg, thresimg, cv::MORPH_OPEN, Kcomclose, Point(-1, -1), 3);
 	
 	vector<BlobInfo> vRegions = RegionPartitionTopology(thresimg);
-	Point2f piccenter = Point2f(creteriaPoint.x/10, creteriaPoint.y / 10);
+
+	Point2f piccenter = Point2f(creteriaPoint.x/ ratio, creteriaPoint.y / ratio);
 
 	try
 	{
@@ -79,9 +81,9 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 
 			}
 
-			Mat debug = Mat(cropedRImg.size(), CV_8UC1);
+			//Mat debug = Mat(cropedRImg.size(), CV_8UC1);
 
-			drawContours(debug, vContour, -1, Scalar(255, 255, 255), -1);
+			//drawContours(debug, vContour, -1, Scalar(255, 255, 255), -1);
 
 
 			std::sort(vChipPossible.begin(), vChipPossible.end(), [&, piccenter](BlobInfo& a, BlobInfo& b)
@@ -93,7 +95,7 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 
 			if (vChipPossible.size() > 0)
 			{
-				potentialchip = Point2i((Point2f(vChipPossible[0].Center().x*10, vChipPossible[0].Center().y * 10)));
+				potentialchip = Point2i((Point2f(vChipPossible[0].Center().x* ratio, vChipPossible[0].Center().y * ratio)));
 
 				flag = 0;
 			}
@@ -117,7 +119,7 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 	cropedRImg.release();
 	EnHBGR.release();
 	gauBGR.release();
-	Kcomclose.release();
+	//Kcomclose.release();
 	thresimg.release();
 	return{ potentialchip,flag };
 }

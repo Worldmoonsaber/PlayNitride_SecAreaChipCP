@@ -456,8 +456,10 @@ void CheckCropImgIsReasonable(Mat img, SettingP_ chipsetting, sizeTD_ target, Im
 	PicCenterOut = Point2f(chipsetting.carx, chipsetting.cary);
 
 	if (PicCenterOut == Point2f(0, 0)) //版本轉換防呆
-		PicCenterOut = Point2f(img.cols*0.5, img.rows * 0.5);
-
+	{
+		PicCenterOut = Point2f(img.cols * 0.5, img.rows * 0.5);
+		return; //(0,0) 後面就沒有檢查的必要了
+	}
 	int xTolerance = int(chipsetting.xpitch[0] * 0.8);
 	int yTolerance = int(chipsetting.ypitch[0] * 0.8);
 

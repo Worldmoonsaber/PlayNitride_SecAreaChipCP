@@ -131,15 +131,15 @@ void CPchips_SecArea(thresP thresParm, ImgP imageParm, SettingP chipsetting, siz
 
 	if (boolflag == 0) //&& imageParm.Outputmode == 0
 	{
-		
+		float ratio = 4;
 		//creteriaPoint = find_piccenter(rawimg);
 
 		/*****Step.1 roughly search chip:::*/
 			/*Resize image to speed up::start*/
-		double resizeTDwidth = _target.TDwidth / 10;
-		double resizeTDheight = _target.TDheight / 10;
+		double resizeTDwidth = _target.TDwidth / ratio;
+		double resizeTDheight = _target.TDheight / ratio;
 		std::cout << "calculate resize TD dimension is:: " << resizeTDwidth << " / " << resizeTDheight << endl;
-		cv::resize(rawimg, cropedRImg, Size(int(rawimg.cols / 10), int(rawimg.rows / 10)), INTER_NEAREST);
+		cv::resize(rawimg, cropedRImg, Size(int(rawimg.cols / ratio), int(rawimg.rows / ratio)), INTER_NEAREST);
 
 		//auto t_start2 = std::chrono::high_resolution_clock::now();
 
@@ -160,7 +160,7 @@ void CPchips_SecArea(thresP thresParm, ImgP imageParm, SettingP chipsetting, siz
 			//cv::resize(drawF2, drawF2, Size(1100, 800), INTER_LINEAR);
 			simupt = Point(0, 0);
 			boolflag = 3;
-			Gimg = Mat::zeros(Size(600, 500), CV_8UC1);
+			Gimg = Mat::zeros(Size(500, 600), CV_8UC1);
 			/*check pitch or move antother area....*/
 		}
 		 
