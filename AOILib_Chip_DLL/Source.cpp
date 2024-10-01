@@ -101,20 +101,14 @@ void CPchips_SecArea(thresP thresParm, ImgP imageParm, SettingP chipsetting, siz
 
 	}//catch loop
 
+	rawimg.copyTo(drawF2);
+
+
 	if (imageParm.cols != rawimg.cols || imageParm.rows != rawimg.rows)
 	{
 		boolflag == 7;
-		rawimg.copyTo(drawF2);
 		Gimg = Mat::zeros(Size(600, 500), CV_8UC1);
 	}
-
-	//----防呆 如果 carX carY 是(0,0) 自動帶入 (2660,2300)
-	//if (_chipsetting.carx == 0 && _chipsetting.cary == 0)
-	//{
-	//	_chipsetting.carx = 2660;
-	//	_chipsetting.cary = 2300;
-	//}
-
 
 	if (imageParm.cols != rawimg.cols || imageParm.rows != rawimg.rows)
 		boolflag = 7;
@@ -122,11 +116,11 @@ void CPchips_SecArea(thresP thresParm, ImgP imageParm, SettingP chipsetting, siz
 	if (boolflag == 0)
 		CheckCropImgIsReasonable(rawimg, _chipsetting, _target, _imageParm, boolflag, creteriaPoint);
 
-	if (boolflag == 7)
-	{
-		rawimg.copyTo(drawF2);
-		Gimg = Mat::zeros(Size(600, 500), CV_8UC1);
-	}
+	//if (boolflag == 7)
+	//{
+	//	rawimg.copyTo(drawF2);
+	//	Gimg = Mat::zeros(Size(600, 500), CV_8UC1);
+	//}
 
 
 	if (boolflag == 0) //&& imageParm.Outputmode == 0
@@ -152,15 +146,15 @@ void CPchips_SecArea(thresP thresParm, ImgP imageParm, SettingP chipsetting, siz
 
 		/*Resize image to speed up:: end*/
 
-		if (Potchip.y< chipsetting.ypitch[0] || Potchip.y>rawimg.rows - chipsetting.ypitch[0] ||
-			Potchip.x< chipsetting.xpitch[0] || Potchip.x>rawimg.cols - chipsetting.xpitch[0])
+		if ((Potchip.y< chipsetting.ypitch[0] || Potchip.y>rawimg.rows - chipsetting.ypitch[0] ||
+			Potchip.x< chipsetting.xpitch[0] || Potchip.x>rawimg.cols - chipsetting.xpitch[0]) &&boolflag==0)
 		{
-			rawimg.copyTo(drawF2);
+			//rawimg.copyTo(drawF2);
 			circle(drawF2, Potchip, 20, Scalar(0, 0, 255), -1);
 			//cv::resize(drawF2, drawF2, Size(1100, 800), INTER_LINEAR);
 			simupt = Point(0, 0);
 			boolflag = 3;
-			Gimg = Mat::zeros(Size(500, 600), CV_8UC1);
+			//Gimg = Mat::zeros(Size(500, 600), CV_8UC1);
 			/*check pitch or move antother area....*/
 		}
 		 
@@ -188,8 +182,9 @@ void CPchips_SecArea(thresP thresParm, ImgP imageParm, SettingP chipsetting, siz
 		}
 		else
 		{
-			rawimg.copyTo(drawF2);
-			Gimg = Mat::zeros(Size(600, 500), CV_8UC1);
+			//rawimg.copyTo(drawF2);
+			//Gimg = Mat::zeros(Size(600, 500), CV_8UC1);
+			DrawNG(drawF2, _thresParm, _chipsetting, Gimg);
 		}
 
 		
@@ -208,11 +203,6 @@ void CPchips_SecArea(thresP thresParm, ImgP imageParm, SettingP chipsetting, siz
 	drawF2.copyTo(image_output);
 	boolResult[0] = boolflag;
 
-	/*for (int i = 1; i < Fourchipspt.size() + 1; i++) //save corner coordinates
-	{
-		outputLEDX[i] = Fourchipspt[i - 1].x;
-		outputLEDY[i] = Fourchipspt[i - 1].y;
-	}*/
 }
 
 

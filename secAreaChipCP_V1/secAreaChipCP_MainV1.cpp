@@ -132,8 +132,8 @@ int main()
 			chipsetting.ypitch[0] = 290;
 		}
 		
-		target.TDwidth = 270;
-		target.TDheight = 280;
+		target.TDwidth = 120;
+		target.TDheight = 220;
 
 		chipsetting.xpitch[0] = 300;
 		chipsetting.ypitch[0] = 310;
@@ -153,11 +153,11 @@ int main()
 			CheckCropImgIsReasonable(rawimg, chipsetting, target, imageParm,boolflag, creteriaPoint);
 
 
-		if (boolflag != 0)
-		{
+		//if (boolflag != 0)
+		//{
 			rawimg.copyTo(markimg_simu);
-			Grayimg = Mat::zeros(Size(600, 500), CV_8UC1);
-		}
+			//Grayimg = Mat::zeros(Size(600, 500), CV_8UC1);
+		//}
 
 
 		if (boolflag == 0)
@@ -174,7 +174,7 @@ int main()
 
 			/*****Step.1 roughly search chip:::*/
 			/*Resize image to speed up::start*/
-			float ratio = 4;
+			float ratio = 2;
 
 			double resizeTDwidth= target.TDwidth / ratio;
 			double resizeTDheight = target.TDheight / ratio;
@@ -192,15 +192,15 @@ int main()
 
 			/*Resize image to speed up:: end*/
 
-			if (Potchip.y< chipsetting.ypitch[0] || Potchip.y>rawimg.rows - chipsetting.ypitch[0]||
-				Potchip.x< chipsetting.xpitch[0] || Potchip.x>rawimg.cols - chipsetting.xpitch[0])
+			if ((Potchip.y< chipsetting.ypitch[0] || Potchip.y>rawimg.rows - chipsetting.ypitch[0]||
+				Potchip.x< chipsetting.xpitch[0] || Potchip.x>rawimg.cols - chipsetting.xpitch[0] )&& boolflag == 0)
 			{
 				rawimg.copyTo(markimg_simu);
 				circle(markimg_simu, Potchip, 20, Scalar(0, 0, 255), -1);
 				cv::resize(markimg_simu, markimg_simu, Size(1100, 800), INTER_LINEAR);
 				simupt = Point(0, 0);
 				boolflag = 3;
-				Grayimg = Mat::zeros(Size(600, 500), CV_8UC1);
+				//Grayimg = Mat::zeros(Size(600, 500), CV_8UC1);//<---
 				/*check pitch or move antother area....*/
 			}
 
@@ -212,24 +212,18 @@ int main()
 		
 			if (boolflag == 0)
 			{
-				/*Grayimg isze= (500,500)*/
 				std::tie(Finechip, boolflag, Grayimg, markimg, finerect) = FinechipDefine_V1(rawimg, target, thresParm, boolflag, Potchip, chipsetting);
 
 				if (boolflag == 0)
 				{
-					/*****Step.3 Simulate coordinate:::*/ 
-					//intput= chipcenter,rawpic_center(2660,2300)
-					//output: simulated center
-
 					std::tie(simupt, markimg_simu, boolflag) = SimulateCoord_V1(rawimg, creteriaPoint, Finechip, boolflag, chipsetting, finerect);
-
 				}
 			}
 			
 			else
 			{
-				rawimg.copyTo(markimg_simu);
-				Grayimg = Mat::zeros(Size(600, 500), CV_8UC1);
+				//rawimg.copyTo(markimg_simu);
+				DrawNG(markimg_simu, thresParm, chipsetting, Grayimg); //Ã¸»sNG ¼v¹³
 			}
 			
 

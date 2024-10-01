@@ -83,6 +83,8 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 
 std::tuple<Point, int, Mat, Mat,Rect> FinechipDefine_V1(Mat rawimg, sizeTD_ target, thresP_ thresParm, int boolflag,Point Potchip, SettingP_ chipsetting);
 
+void DrawNG(Mat& markimg_simu, thresP_ thresParm, SettingP_ chipsetting, Mat& Grayimg);
+
 std::tuple<Point, Mat, int>SimulateCoord_V1(Mat rawimg, Point piccenter, Point Finechip, int boolflag, SettingP_ chipsetting, Rect fineRect);
 #pragma endregion
 

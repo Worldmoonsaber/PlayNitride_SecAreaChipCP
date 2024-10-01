@@ -472,6 +472,4 @@ void CheckCropImgIsReasonable(Mat img, SettingP_ chipsetting, sizeTD_ target, Im
 		flag = 6;
 }
 
-
-
 # pragma endregion General_Unused_function

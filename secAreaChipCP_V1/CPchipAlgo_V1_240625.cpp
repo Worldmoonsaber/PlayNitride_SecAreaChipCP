@@ -4,9 +4,9 @@
 
 #pragma region STEP1_roughlysearch 
 
-std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwidth, double resizeTDheight, sizeTD_ target, int thresmode, int flag, double theta,Point2f creteriaPoint)
+std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwidth, double resizeTDheight, sizeTD_ target, int thresmode, int flag, double theta, Point2f creteriaPoint)
 {
-	Point potentialchip = Point(0, 0);
+	Point potentialchip = Point(-1, -1);
 	float ratio = 2;
 
 	Mat gauBGR, EnHBGR;
@@ -39,10 +39,15 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 	vector<Point2f> potPT;
 	vector<double>potDist;
 
-	//Mat Kcomclose = Mat::ones(Size(3, 3), CV_8UC1);
-	//cv::morphologyEx(thresimg, thresimg, cv::MORPH_CLOSE, Kcomclose, Point(-1, -1), 3);
-	//cv::morphologyEx(thresimg, thresimg, cv::MORPH_OPEN, Kcomclose, Point(-1, -1), 3);
-	
+
+	if (resizeTDwidth / 100 > 0 && resizeTDheight / 100 > 0)
+	{
+		Mat Kcomclose = Mat::ones(Size(3, 3), CV_8UC1);
+		cv::morphologyEx(thresimg, thresimg, cv::MORPH_CLOSE, Kcomclose, Point(-1, -1), 3);
+		cv::morphologyEx(thresimg, thresimg, cv::MORPH_OPEN, Kcomclose, Point(-1, -1), 3);
+		Kcomclose.release();
+	}
+
 	vector<BlobInfo> vRegions = RegionPartitionTopology(thresimg);
 
 	Point2f piccenter = Point2f(creteriaPoint.x/ ratio, creteriaPoint.y / ratio);
@@ -57,7 +62,7 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 		else
 		{
 			vector<BlobInfo> vChipPossible;
-			vector<vector<Point>> vContour;
+			//vector<vector<Point>> vContour;
 
 			for (int i = 0; i < vRegions.size(); i++)
 			{	
@@ -75,8 +80,13 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 					vRegions[i].Width() * vRegions[i].Height() > (resizeTDwidth * resizeTDheight * 0.6) &&
 					bxangle <theta) //theta=3
 				{
-					vChipPossible.push_back(vRegions[i]);
-					vContour.push_back(vRegions[i].contourMain());
+
+					if (vRegions[i].Width() > 0.5 * resizeTDwidth && vRegions[i].Width() < 1.5 * resizeTDwidth &&
+						vRegions[i].Height() > 0.5 * resizeTDheight && vRegions[i].Height() < 1.5 * resizeTDheight)
+					{
+						vChipPossible.push_back(vRegions[i]);
+						//vContour.push_back(vRegions[i].contourMain());
+					}
 				}
 
 			}
@@ -119,7 +129,6 @@ std::tuple<Point, int> potentialchipSearch_V1(Mat cropedRImg, double resizeTDwid
 	cropedRImg.release();
 	EnHBGR.release();
 	gauBGR.release();
-	//Kcomclose.release();
 	thresimg.release();
 	return{ potentialchip,flag };
 }
@@ -291,6 +300,97 @@ std::tuple<Point, int,Mat,Mat,Rect> FinechipDefine_V1(Mat rawimg, sizeTD_ target
 	gauBGR.release();
 	rawimg.release();
 	return{ finechip,boolflag ,Grayimg,markimg,Rect(drawrect.x + IMGoffset.x, drawrect.y + IMGoffset.y, drawrect.width, drawrect.height) };
+}
+
+
+void DrawNG(Mat& markimg_simu, thresP_ thresParm, SettingP_ chipsetting,Mat& Grayimg)
+{
+
+	Point PicCenterOut = Point(chipsetting.carx, chipsetting.cary);
+
+	if (PicCenterOut == Point(0, 0)) //ª©¥»Âà´«¨¾§b
+	{
+		PicCenterOut = Point2f(markimg_simu.cols * 0.5, markimg_simu.rows * 0.5);
+	}
+
+	Point finechip = Point(0, 0);
+	Point IMGoffset = Point(0, 0);
+	Mat markimg;
+	markimg_simu.copyTo(markimg);
+	/*Automatically crop image via pitch setting---> use chip dimension*/
+
+	IMGoffset.x = PicCenterOut.x - int(chipsetting.xpitch[0] * 0.8);
+	IMGoffset.y = PicCenterOut.y - int(chipsetting.ypitch[0] * 0.8);
+
+	if (IMGoffset.x <= 0)
+		IMGoffset.x = 0;
+
+	if (IMGoffset.y <= 0)
+		IMGoffset.y = 0;
+
+	Rect Cregion(IMGoffset.x, IMGoffset.y, int(chipsetting.xpitch[0] * 0.8) * 2, int(chipsetting.ypitch[0] * 0.8 * 2));
+
+	Mat cropedrawimg = CropIMG(markimg_simu, Cregion);
+	Mat cropedRImg;
+
+	cvtColor(cropedrawimg, cropedRImg, COLOR_BGR2GRAY);
+cv:rectangle(markimg, Cregion, Scalar(0, 0, 255), 2);
+	Mat medimg, adptThres;
+
+	Mat gauBGR, EnHBGR, FNDimg;
+	cropedRImg.convertTo(cropedRImg, -1, 1.2, 0);
+	cv::GaussianBlur(cropedRImg, gauBGR, Size(0, 0), 13);
+	cv::addWeighted(cropedRImg, 1.5, gauBGR, -0.7, 0.0, EnHBGR); //(1.5, -0.7)
+	cv::medianBlur(cropedRImg, medimg, 5);
+	int adaptWsize = 3;
+	int adaptKsize = 2;
+
+	if (thresParm.thresmode == 3)
+	{
+		if (thresParm.bgmax[0] & 1)
+		{
+			adaptWsize = thresParm.bgmax[0];
+			adaptKsize = thresParm.fgmax[0];
+		}
+		else
+		{
+			adaptWsize = thresParm.bgmax[0] + 1;
+			adaptKsize = thresParm.fgmax[0];
+		}
+
+		adaptiveThreshold(medimg, adptThres, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, adaptWsize, adaptKsize);//55,1 //ADAPTIVE_THRESH_MEAN_C
+
+		Mat Kcomclose = Mat::ones(Size(5, 5), CV_8UC1);  //Size(10,5)
+		cv::morphologyEx(adptThres, Grayimg, cv::MORPH_CLOSE, Kcomclose, Point(-1, -1), 1);//1 //2
+	}
+	else if (thresParm.thresmode == 4)
+	{
+		if (thresParm.bgmax[0] & 1)
+		{
+			adaptWsize = thresParm.bgmax[0];
+			adaptKsize = thresParm.fgmax[0];
+		}
+		else
+		{
+			adaptWsize = thresParm.bgmax[0] + 1;
+			adaptKsize = thresParm.fgmax[0];
+		}
+		adaptiveThreshold(medimg, adptThres, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, adaptWsize, adaptKsize);//55,1 //ADAPTIVE_THRESH_MEAN_C
+		//cv::medianBlur(adptThres, comthresIMG, 7);
+		Mat Kcomclose = Mat::ones(Size(5, 5), CV_8UC1);  //Size(10,5)
+		cv::morphologyEx(adptThres, Grayimg, cv::MORPH_CLOSE, Kcomclose, Point(-1, -1), 1);//1 //2
+	}
+
+	adptThres.release();
+	medimg.release();
+	cropedrawimg.release();
+	cropedRImg.release();
+	EnHBGR.release();
+	gauBGR.release();
+
+	//markimg_simu
+
+	rectangle(markimg_simu, Cregion,Scalar(0,255,200),2,3);
 }
 
 
