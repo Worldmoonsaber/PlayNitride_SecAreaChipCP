@@ -132,8 +132,8 @@ int main()
 			chipsetting.ypitch[0] = 290;
 		}
 		
-		target.TDwidth = 120;
-		target.TDheight = 220;
+		target.TDwidth = 250;
+		target.TDheight = 280;
 
 		chipsetting.xpitch[0] = 300;
 		chipsetting.ypitch[0] = 310;
